@@ -5,21 +5,29 @@ import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
     const navigate = useNavigate();
-    const { signup } = useAuth();
+    const { signup, authError } = useAuth();
     const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
-    const [error, setError] = useState('');
+    const [localError, setLocalError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setLocalError('');
         
         if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
+            setLocalError('Passwords do not match');
             return;
         }
         
-        signup(formData);
-        navigate('/login');
+        const signupData = {
+            name: `${formData.firstName} ${formData.lastName}`.trim(),
+            email: formData.email,
+            password: formData.password
+        };
+        
+        const success = await signup(signupData);
+        if (success) {
+            navigate('/login');
+        }
     };
 
     return (
@@ -89,11 +97,12 @@ const SignUp = () => {
                                 className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all font-medium text-slate-800"
                             />
                         </div>
-                        {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
+                        {localError && <p className="text-red-500 text-sm font-medium">{localError}</p>}
+                        {authError && <p className="text-red-500 text-sm font-medium">{authError}</p>}
                     </div>
 
                     <div className="flex flex-col gap-6">
-                        <Button onClick={handleSubmit}>Create Account</Button>
+                        <Button type="submit">Create Account</Button>
                         <div className="text-center">
                             <p className="text-slate-500 font-medium text-sm">
                                 Already have an account? <Link to="/login" className="text-blue-600 font-bold hover:underline">Log in</Link>

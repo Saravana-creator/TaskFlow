@@ -3,15 +3,16 @@ import { useAuth } from "../context/AuthContext";
 
 const Sidenav = () => {
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const modules = [
         { name: "Dashboard", path: "/" },
         { name: "Projects", path: "/projects" },
         { name: "Team Members", path: "/team" }
     ];
-    const user = {
-        name: "Saravana Perumal",
-        role: "Project Manager"
+
+    const actualUser = {
+        name: user?.name || "Guest",
+        role: user?.role || "Team Member"
     };
 
     const getInitials = (name) => {
@@ -54,11 +55,11 @@ const Sidenav = () => {
             <div className="pt-6 border-t border-slate-800">
                 <div className="flex items-center gap-4 group cursor-pointer p-2 rounded-xl hover:bg-slate-800 transition-all duration-200">
                     <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-xl font-bold border-2 border-blue-400 shadow-[0_0_15px_rgba(37,99,235,0.4)] transition-transform group-hover:scale-105">
-                        {getInitials(user.name)}
+                        {getInitials(actualUser.name)}
                     </div>
                     <div className="flex flex-col overflow-hidden flex-1">
-                        <span className="font-semibold text-sm tracking-wide text-slate-100 truncate">{user.name}</span>
-                        <span className="text-xs text-slate-400 font-medium truncate">{user.role}</span>
+                        <span className="font-semibold text-sm tracking-wide text-slate-100 truncate">{actualUser.name}</span>
+                        <span className="text-xs text-slate-400 font-medium truncate">{actualUser.role}</span>
                     </div>
                 </div>
                 <button
